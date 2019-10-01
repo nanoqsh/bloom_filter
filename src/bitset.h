@@ -36,9 +36,10 @@ public:
 
         ios_base::fmtflags defs(cout.flags());
 
-        for (size_t i = 0; i < array_size; ++i)
+        for (size_t i = 0; i < array_size; ++i) {
             cout << setfill('0') << setw(2) << hex << (int)bits[i] << ' ';
-
+        }
+        
         cout << '\n';
         cout.flags(defs);
     }
@@ -76,9 +77,10 @@ private:
         size_t base = pos / 8;
         size_t step = pos % 8;
 
-        if (base >= array_size)
+        if (base >= array_size) {
             throw std::out_of_range("Out of bitset range");
-
+        }
+        
         return {base, step};
     }
 
