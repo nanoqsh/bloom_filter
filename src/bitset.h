@@ -17,11 +17,18 @@ public:
         size(size),
         array_size(ceil(size / 8.0)),
         bits(std::make_unique<uint8_t[]>(array_size))
-        {
+    {
         memset(bits.get(), 0, array_size);
     }
 
-    bitset(bitset& _) = delete;
+    bitset(bitset& other):
+        size(other.size),
+        array_size(other.array_size),
+        bits(std::make_unique<uint8_t[]>(array_size))
+    {
+        memcpy(bits.get(), other.bits.get(), array_size);
+    }
+
     bitset& operator=(bitset& _) = delete;
 
     void dump() {
@@ -32,12 +39,21 @@ public:
         for (size_t i = 0; i < array_size; ++i)
             cout << setfill('0') << setw(2) << hex << (int)bits[i] << ' ';
 
+        cout << '\n';
         cout.flags(defs);
     }
 
     void set(size_t pos) {
         position p = locate_bit(pos);
         bits[p.base] |= 1U << p.step;
+    }
+
+    void set(size_t pos, bool value) {
+        if (value) {
+            set(pos);
+        } else {
+            unset(pos);
+        }
     }
 
     void unset(size_t pos) {
