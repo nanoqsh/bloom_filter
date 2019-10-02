@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "bitset.h"
+#include "seeded_function_set.h"
 
 int main() {
 
@@ -31,8 +32,23 @@ int main() {
     assert(!bits2.get(11));
     assert(!bits2.get(12));
 
-    bits.dump();
-    bits2.dump();
+    std::cout << bits << '\n';
+    std::cout << bits2 << '\n';
+
+    bits2.set(0);
+    bits = std::move(bits2);
+
+    std::cout << bits << '\n';
+
+    seeded_function_set<int> fn_set(12, [](const int& par, size_t seed) -> size_t {
+        std::cout << seed << '\n';
+        return par + seed;
+    });
+
+    for (size_t i = 0; i < 12; ++i) {
+        size_t hash = fn_set[i](12);
+        std::cout << "hash: " << hash << '\n';
+    }
 
     return 0;
 }

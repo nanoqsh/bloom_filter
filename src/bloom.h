@@ -7,27 +7,29 @@
 #include <bitset>
 
 #include "bitset.h"
+#include "seeded_function_set.h"
 
 template <
     class ElemType,
     class HashType = size_t,
-    class SeedType = size_t
+    class ArgType = const ElemType&,
+    class FuncSet = seeded_function_set<ElemType, HashType, ArgType>
 >
 class bloom {
 public:
 
-    bloom(
+    explicit bloom(
         size_t size,
-        std::function<HashType (ElemType, SeedType)> hash_family
+        std::function<HashType (ArgType, size_t)> hash_fn
         ):
-        hash_family(std::move(hash_family)),
-        bits(size)
+        bits(size),
+        function_set(FuncSet(size + - 1, hash_fn))
         {}
 
     bloom(bloom&) = delete;
     bloom& operator=(bloom) = delete;
 
 private:
-    std::function<HashType (ElemType, SeedType)> hash_family;
     bitset bits;
+    FuncSet function_set;
 };
