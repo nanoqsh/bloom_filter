@@ -31,8 +31,13 @@ int main() {
     assert(!bits2.get(11));
     assert(!bits2.get(12));
 
-    bits.dump();
-    bits2.dump();
+    std::cout << bits << '\n';
+    std::cout << bits2 << '\n';
+
+    bits2.set(0);
+    bits = std::move(bits2);
+
+    std::cout << bits << '\n';
 
     return 0;
 }
