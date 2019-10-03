@@ -2,7 +2,6 @@
 #pragma once
 
 #include <functional>
-#include <iostream>
 #include <cmath>
 
 #include "bitset.h"

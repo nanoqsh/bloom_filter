@@ -10,8 +10,11 @@ int main() {
         "bar",
         "foo",
         "text",
-        "test"
+        "test",
+        "abc",
+        "def"
     };
+
     const size_t size = sizeof(strings) / sizeof(*strings);
 
     auto hash_fn = [](const char* str, size_t seed) -> size_t {
