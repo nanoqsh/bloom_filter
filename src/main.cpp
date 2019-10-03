@@ -20,8 +20,6 @@ int main() {
     auto hash_fn = [](const char* str, size_t seed) -> size_t {
         size_t hash = seed;
 
-        printf("%s\n", str);
-
         while (char c = *str++) {
             hash = ((hash << 5) + hash) + c;
         }

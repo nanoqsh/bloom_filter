@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <iostream>
+#include <utility>
 
 class bitset
 {
@@ -29,13 +30,18 @@ public:
         memcpy(bits.get(), other.bits.get(), array_size);
     }
 
+    bitset& operator=(bitset rht) {
+        bits_size = rht.bits_size;
+        array_size = rht.array_size;
+        bits = std::move(rht.bits);
+        return *this;
+    }
+
     bitset(bitset&& rht) noexcept:
-            bits_size(rht.bits_size),
+        bits_size(rht.bits_size),
         array_size(rht.array_size),
         bits(std::move(rht.bits))
     {}
-
-    bitset& operator=(bitset& _) = delete;
 
     bitset& operator=(bitset&& rht) noexcept {
         bits_size = rht.bits_size;

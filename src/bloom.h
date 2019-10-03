@@ -3,14 +3,14 @@
 
 #include <functional>
 #include <cmath>
+#include <utility>
 
 #include "bitset.h"
 #include "seeded_function_set.h"
 
 template <
     class ArgType,
-    class HashType = size_t,
-    class FuncSet = seeded_function_set<ArgType, HashType>
+    class FuncSet = seeded_function_set<ArgType>
 >
 class bloom {
 public:
@@ -18,31 +18,30 @@ public:
     bloom(
         size_t size,
         size_t num_hash_functions,
-        std::function<HashType (ArgType, size_t)> hash_fn
+        std::function<size_t (ArgType, size_t)> hash_fn
         ):
         bits(size),
         function_set(num_hash_functions, hash_fn)
     {}
 
-    static bloom optimal_bloom(
-        size_t max_elements,
-        double error_probability,
-        std::function<HashType (ArgType, size_t)> hash_fn
-        )
-    {
-        double ln2 = log(2.0);
-        size_t size = ceil(-(max_elements * log(error_probability)) / (ln2 * ln2));
-        size_t num_hash_functions = ceil((size / (double)max_elements) * ln2);
-
-        return bloom(size, num_hash_functions, hash_fn);
-    }
-
     bloom(bloom&) = delete;
     bloom& operator=(bloom) = delete;
 
+    bloom(bloom&& rht) noexcept:
+        bits(std::move(rht.bits)),
+        function_set(rht.function_set),
+        count(rht.count)
+    {}
+
+    bloom& operator=(bloom&& rht) noexcept {
+        bits = std::move(rht.bits);
+        function_set = rht.function_set;
+        count = rht.count;
+    }
+
     void add(ArgType element) {
         for (size_t i = 0; i < function_set.size(); ++i) {
-            HashType hash = function_set[i](element);
+            size_t hash = function_set[i](element);
             bits.set(hash % bits.size());
         }
 
@@ -51,7 +50,7 @@ public:
 
     bool possibly_contains(ArgType element) const {
         for (size_t i = 0; i < function_set.size(); ++i) {
-            HashType hash = function_set[i](element);
+            size_t hash = function_set[i](element);
             if (!bits.get(hash % bits.size())) {
                 return false;
             }
@@ -67,6 +66,19 @@ public:
 
     size_t elements_count() const {
         return count;
+    }
+
+    static bloom optimal_bloom(
+        size_t max_elements,
+        double error_probability,
+        std::function<size_t (ArgType, size_t)> hash_fn
+        )
+    {
+        double ln2 = log(2.0);
+        size_t size = ceil(-(max_elements * log(error_probability)) / (ln2 * ln2));
+        size_t num_hash_functions = ceil((size / (double)max_elements) * ln2);
+
+        return bloom(size, num_hash_functions, hash_fn);
     }
 
 private:

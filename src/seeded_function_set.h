@@ -6,15 +6,12 @@
 #include <functional>
 #include <random>
 
-template <
-    class ArgType,
-    class HashType = size_t
->
+template <class ArgType>
 class seeded_function_set {
 public:
     seeded_function_set(
         size_t size,
-        std::function<HashType (ArgType, size_t)> hash_fn):
+        std::function<size_t (ArgType, size_t)> hash_fn):
         seeds(),
         hash_fn(hash_fn)
     {
@@ -28,7 +25,18 @@ public:
         }
     }
 
-    std::function<HashType (ArgType)> operator[](size_t idx) const {
+    seeded_function_set(const seeded_function_set& rht):
+        seeds(rht.seeds),
+        hash_fn(rht.hash_fn)
+    {}
+
+    seeded_function_set& operator=(seeded_function_set rht) {
+        seeds = rht.seeds;
+        hash_fn = rht.hash_fn;
+        return *this;
+    }
+
+    std::function<size_t (ArgType)> operator[](size_t idx) const {
         if (idx >= seeds.size()) {
             throw std::out_of_range("Out of bitset range");
         }
@@ -46,5 +54,5 @@ public:
 
 private:
     std::vector<size_t> seeds;
-    std::function<HashType (ArgType, size_t)> hash_fn;
+    std::function<size_t (ArgType, size_t)> hash_fn;
 };
