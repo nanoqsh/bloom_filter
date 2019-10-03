@@ -1,53 +1,46 @@
 
-#include <cassert>
+#include <iostream>
 
-#include "bitset.h"
-#include "seeded_function_set.h"
+#include "bloom.h"
 
 int main() {
 
-    bitset bits(45);
-    bits.set(8, true);
-    bits.set(9);
-    bits.set(10);
-    bits.set(11);
-    bits.set(11, false);
+    const char* strings[] = {
+        "baz",
+        "bar",
+        "foo",
+        "text",
+        "test"
+    };
+    const size_t size = sizeof(strings) / sizeof(*strings);
 
-    assert(!bits.get(0));
-    assert(!bits.get(1));
-    assert(!bits.get(2));
-    assert(!bits.get(3));
-    assert( bits.get(9));
-    assert( bits.get(10));
-    assert(!bits.get(11));
-    assert(!bits.get(12));
+    auto hash_fn = [](const char* str, size_t seed) -> size_t {
+        size_t hash = seed;
 
-    bitset bits2 = bits;
-    assert(!bits2.get(0));
-    assert(!bits2.get(1));
-    assert(!bits2.get(2));
-    assert(!bits2.get(3));
-    assert( bits2.get(9));
-    assert( bits2.get(10));
-    assert(!bits2.get(11));
-    assert(!bits2.get(12));
+        printf("%s\n", str);
 
-    std::cout << bits << '\n';
-    std::cout << bits2 << '\n';
+        while (char c = *str++) {
+            hash = ((hash << 5) + hash) + c;
+        }
 
-    bits2.set(0);
-    bits = std::move(bits2);
+        return hash;
+    };
 
-    std::cout << bits << '\n';
+    bloom bl = bloom<const char*>::optimal_bloom(size, 0.1, hash_fn);
 
-    seeded_function_set<int> fn_set(12, [](const int& par, size_t seed) -> size_t {
-        std::cout << seed << '\n';
-        return par + seed;
-    });
+    for (size_t i = 0; i < size; ++i) {
+        bl.add(strings[i]);
+    }
 
-    for (size_t i = 0; i < 12; ++i) {
-        size_t hash = fn_set[i](12);
-        std::cout << "hash: " << hash << '\n';
+    std::cout << bl.error_probability() << '\n';
+    std::cout << bl.elements_count() << '\n';
+
+    for (size_t i = 0; i < size; ++i) {
+        if (bl.possibly_contains(strings[i])) {
+            std::cout << strings[i] << " - contains\n";
+        } else {
+            std::cout << strings[i] << " - NOT\n";
+        }
     }
 
     return 0;

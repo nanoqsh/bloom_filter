@@ -7,9 +7,8 @@
 #include <random>
 
 template <
-    class ElemType,
-    class HashType = size_t,
-    class ArgType = const ElemType&
+    class ArgType,
+    class HashType = size_t
 >
 class seeded_function_set {
 public:
@@ -24,11 +23,12 @@ public:
 
         seeds.reserve(size);
 
-        for (size_t i = 0; i < size; ++i)
+        for (size_t i = 0; i < size; ++i) {
             seeds.push_back(distribution(gen));
+        }
     }
 
-    std::function<HashType (ArgType)> operator[](size_t idx) {
+    std::function<HashType (ArgType)> operator[](size_t idx) const {
         if (idx >= seeds.size()) {
             throw std::out_of_range("Out of bitset range");
         }
@@ -38,6 +38,10 @@ public:
         return [seed, this](ArgType element) -> size_t {
             return hash_fn(element, seed);
         };
+    }
+
+    size_t size() const {
+        return seeds.size();
     }
 
 private:

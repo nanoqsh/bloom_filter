@@ -14,7 +14,7 @@ class bitset
 {
 public:
     explicit bitset(size_t size):
-        size(size),
+        bits_size(size),
         array_size(ceil(size / 8.0)),
         bits(std::make_unique<uint8_t[]>(array_size))
     {
@@ -22,7 +22,7 @@ public:
     }
 
     bitset(bitset& other):
-        size(other.size),
+        bits_size(other.bits_size),
         array_size(other.array_size),
         bits(std::make_unique<uint8_t[]>(array_size))
     {
@@ -30,18 +30,15 @@ public:
     }
 
     bitset(bitset&& rht) noexcept:
-        size(rht.size),
+            bits_size(rht.bits_size),
         array_size(rht.array_size),
         bits(std::move(rht.bits))
-    {
-        rht.size = 0;
-        rht.array_size = 0;
-    }
+    {}
 
     bitset& operator=(bitset& _) = delete;
 
     bitset& operator=(bitset&& rht) noexcept {
-        size = rht.size;
+        bits_size = rht.bits_size;
         array_size = rht.array_size;
         bits = std::move(rht.bits);
         return *this;
@@ -70,6 +67,10 @@ public:
         return (bool)(bits[p.base] >> p.step) & 1U;
     }
 
+    size_t size() const {
+        return bits_size;
+    }
+
     friend std::ostream & operator<<(std::ostream &out, const bitset& rht);
 
 private:
@@ -89,7 +90,7 @@ private:
         return { base, step };
     }
 
-    size_t size;
+    size_t bits_size;
     size_t array_size;
     std::unique_ptr<uint8_t[]> bits;
 };
