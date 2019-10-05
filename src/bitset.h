@@ -11,39 +11,35 @@
 #include <iostream>
 #include <utility>
 
-class bitset
-{
+class bitset {
 public:
-    explicit bitset(size_t size):
-        bits_size(size),
-        array_size(ceil(size / 8.0)),
-        bits(std::make_unique<uint8_t[]>(array_size))
-    {
+    explicit bitset(size_t size) :
+            bits_size(size),
+            array_size(ceil(size / 8.0)),
+            bits(std::make_unique<uint8_t[]>(array_size)) {
         memset(bits.get(), 0, array_size);
     }
 
-    bitset(bitset& other):
-        bits_size(other.bits_size),
-        array_size(other.array_size),
-        bits(std::make_unique<uint8_t[]>(array_size))
-    {
+    bitset(bitset &other) :
+            bits_size(other.bits_size),
+            array_size(other.array_size),
+            bits(std::make_unique<uint8_t[]>(array_size)) {
         memcpy(bits.get(), other.bits.get(), array_size);
     }
 
-    bitset& operator=(bitset rht) {
+    bitset &operator=(bitset rht) {
         bits_size = rht.bits_size;
         array_size = rht.array_size;
         bits = std::move(rht.bits);
         return *this;
     }
 
-    bitset(bitset&& rht) noexcept:
-        bits_size(rht.bits_size),
-        array_size(rht.array_size),
-        bits(std::move(rht.bits))
-    {}
+    bitset(bitset &&rht) noexcept:
+            bits_size(rht.bits_size),
+            array_size(rht.array_size),
+            bits(std::move(rht.bits)) {}
 
-    bitset& operator=(bitset&& rht) noexcept {
+    bitset &operator=(bitset &&rht) noexcept {
         bits_size = rht.bits_size;
         array_size = rht.array_size;
         bits = std::move(rht.bits);
@@ -70,14 +66,14 @@ public:
 
     bool get(size_t pos) const {
         position p = locate_bit(pos);
-        return (bool)(bits[p.base] >> p.step) & 1U;
+        return (bool) (bits[p.base] >> p.step) & 1U;
     }
 
     size_t size() const {
         return bits_size;
     }
 
-    friend std::ostream & operator<<(std::ostream &out, const bitset& rht);
+    friend std::ostream &operator<<(std::ostream &out, const bitset &rht);
 
 private:
     struct position {
@@ -93,7 +89,7 @@ private:
             throw std::out_of_range("Out of bitset range");
         }
 
-        return { base, step };
+        return {base, step};
     }
 
     size_t bits_size;

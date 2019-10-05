@@ -5,19 +5,19 @@
 
 int main() {
 
-    const char* strings[] = {
-        "baz",
-        "bar",
-        "foo",
-        "text",
-        "test",
-        "abc",
-        "def"
+    const char *strings[] = {
+            "baz",
+            "bar",
+            "foo",
+            "text",
+            "test",
+            "abc",
+            "def"
     };
 
     const size_t size = sizeof(strings) / sizeof(*strings);
 
-    auto hash_fn = [](const char* str, size_t seed) -> size_t {
+    auto hash_fn = [](const char *str, size_t seed) -> size_t {
         size_t hash = seed;
 
         while (char c = *str++) {
@@ -27,7 +27,7 @@ int main() {
         return hash;
     };
 
-    bloom bl = bloom<const char*>::optimal_bloom(size, 0.1, hash_fn);
+    bloom bl = bloom<const char *>::optimal_bloom(size, 0.1, hash_fn);
 
     for (size_t i = 0; i < size; ++i) {
         bl.add(strings[i]);
