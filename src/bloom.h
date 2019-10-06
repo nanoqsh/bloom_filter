@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <cmath>
+#include <stdexcept>
 #include <utility>
 
 #include "bitset.h"
@@ -67,11 +68,21 @@ public:
         return count;
     }
 
+    size_t bits_count() const {
+        return bits.size();
+    }
+
     static bloom optimal_bloom(
             size_t max_elements,
             double error_probability,
             std::function<size_t(ArgType, size_t)> hash_fn
     ) {
+        if (error_probability <= 0 || error_probability > 1) {
+            throw std::invalid_argument(
+                    "'error_probability' must be between 0 (exclusively) and 1 (inclusively)"
+                    );
+        }
+
         double ln2 = log(2.0);
         size_t size = ceil(-(max_elements * log(error_probability)) / (ln2 * ln2));
         size_t num_hash_functions = ceil((size / (double) max_elements) * ln2);

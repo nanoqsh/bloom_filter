@@ -34,6 +34,7 @@ int main() {
     }
 
     std::cout << bl.error_probability() << '\n';
+    std::cout << bl.bits_count() << '\n';
     std::cout << bl.elements_count() << '\n';
 
     for (const std::string &str : list) {
