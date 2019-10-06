@@ -1,11 +1,13 @@
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "bloom.h"
 
 int main() {
 
-    const char *strings[] = {
+    std::vector<std::string> list = {
             "baz",
             "bar",
             "foo",
@@ -15,32 +17,30 @@ int main() {
             "def"
     };
 
-    const size_t size = sizeof(strings) / sizeof(*strings);
-
-    auto hash_fn = [](const char *str, size_t seed) -> size_t {
+    auto hash_fn = [](const std::string &str, size_t seed) -> size_t {
         size_t hash = seed;
 
-        while (char c = *str++) {
+        for (char c : str) {
             hash = ((hash << 5) + hash) + c;
         }
 
         return hash;
     };
 
-    bloom bl = bloom<const char *>::optimal_bloom(size, 0.1, hash_fn);
+    bloom bl = bloom<const std::string &>::optimal_bloom(list.size(), 0.1, hash_fn);
 
-    for (size_t i = 0; i < size; ++i) {
-        bl.add(strings[i]);
+    for (const std::string &str : list) {
+        bl.add(str);
     }
 
     std::cout << bl.error_probability() << '\n';
     std::cout << bl.elements_count() << '\n';
 
-    for (size_t i = 0; i < size; ++i) {
-        if (bl.possibly_contains(strings[i])) {
-            std::cout << strings[i] << " - contains\n";
+    for (const std::string &str : list) {
+        if (bl.possibly_contains(str)) {
+            std::cout << str << " - contains\n";
         } else {
-            std::cout << strings[i] << " - NOT\n";
+            std::cout << str << " - NOT\n";
         }
     }
 

@@ -27,22 +27,22 @@ public:
         memcpy(bits.get(), other.bits.get(), array_size);
     }
 
-    bitset &operator=(bitset rht) {
-        bits_size = rht.bits_size;
-        array_size = rht.array_size;
-        bits = std::move(rht.bits);
+    bitset &operator=(bitset rhs) {
+        bits_size = rhs.bits_size;
+        array_size = rhs.array_size;
+        bits = std::move(rhs.bits);
         return *this;
     }
 
-    bitset(bitset &&rht) noexcept:
-            bits_size(rht.bits_size),
-            array_size(rht.array_size),
-            bits(std::move(rht.bits)) {}
+    bitset(bitset &&other) noexcept:
+            bits_size(other.bits_size),
+            array_size(other.array_size),
+            bits(std::move(other.bits)) {}
 
-    bitset &operator=(bitset &&rht) noexcept {
-        bits_size = rht.bits_size;
-        array_size = rht.array_size;
-        bits = std::move(rht.bits);
+    bitset &operator=(bitset &&rhs) noexcept {
+        bits_size = rhs.bits_size;
+        array_size = rhs.array_size;
+        bits = std::move(rhs.bits);
         return *this;
     }
 
@@ -100,12 +100,12 @@ private:
 std::ostream &operator<<(std::ostream &out, const bitset &rht) {
     using namespace std;
 
-    ios_base::fmtflags defs(out.flags());
+    ios_base::fmtflags default_flags(out.flags());
 
     for (size_t i = 0; i < rht.array_size; ++i) {
         out << setfill('0') << setw(2) << hex << (int) rht.bits[i] << ' ';
     }
 
-    out.flags(defs);
+    out.flags(default_flags);
     return out;
 }

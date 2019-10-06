@@ -27,29 +27,29 @@ public:
 
     bloom &operator=(bloom) = delete;
 
-    bloom(bloom &&rht) noexcept:
-            bits(std::move(rht.bits)),
-            function_set(rht.function_set),
-            count(rht.count) {}
+    bloom(bloom &&other) noexcept:
+            bits(std::move(other.bits)),
+            function_set(other.function_set),
+            count(other.count) {}
 
-    bloom &operator=(bloom &&rht) noexcept {
-        bits = std::move(rht.bits);
-        function_set = rht.function_set;
-        count = rht.count;
+    bloom &operator=(bloom &&rhs) noexcept {
+        bits = std::move(rhs.bits);
+        function_set = rhs.function_set;
+        count = rhs.count;
     }
 
-    void add(ArgType element) {
+    void add(ArgType item) {
         for (size_t i = 0; i < function_set.size(); ++i) {
-            size_t hash = function_set[i](element);
+            size_t hash = function_set[i](item);
             bits.set(hash % bits.size());
         }
 
-        count++;
+        ++count;
     }
 
-    bool possibly_contains(ArgType element) const {
+    bool possibly_contains(ArgType item) const {
         for (size_t i = 0; i < function_set.size(); ++i) {
-            size_t hash = function_set[i](element);
+            size_t hash = function_set[i](item);
             if (!bits.get(hash % bits.size())) {
                 return false;
             }

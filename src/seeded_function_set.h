@@ -24,13 +24,13 @@ public:
         }
     }
 
-    seeded_function_set(const seeded_function_set &rht) :
-            seeds(rht.seeds),
-            hash_fn(rht.hash_fn) {}
+    seeded_function_set(const seeded_function_set &other) :
+            seeds(other.seeds),
+            hash_fn(other.hash_fn) {}
 
-    seeded_function_set &operator=(seeded_function_set rht) {
-        seeds = rht.seeds;
-        hash_fn = rht.hash_fn;
+    seeded_function_set &operator=(seeded_function_set rhs) {
+        seeds = rhs.seeds;
+        hash_fn = rhs.hash_fn;
         return *this;
     }
 
