@@ -24,6 +24,9 @@ public:
         }
     }
 
+    seeded_function_set(seeded_function_set&&) = default;
+    seeded_function_set& operator=(seeded_function_set&&) = default;
+
     seeded_function_set(const seeded_function_set &other) :
             seeds(other.seeds),
             hash_fn(other.hash_fn) {}

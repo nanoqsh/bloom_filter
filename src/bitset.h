@@ -17,29 +17,20 @@ public:
             bits_size(size),
             array_size(ceil(size / 8.0)),
             bits(std::make_unique<uint8_t[]>(array_size)) {
-        memset(bits.get(), 0, array_size);
+        std::memset(bits.get(), 0, array_size);
     }
 
     bitset(bitset &other) :
             bits_size(other.bits_size),
             array_size(other.array_size),
             bits(std::make_unique<uint8_t[]>(array_size)) {
-        memcpy(bits.get(), other.bits.get(), array_size);
+        std::memcpy(bits.get(), other.bits.get(), array_size);
     }
+
+    bitset(bitset&&) = default;
+    bitset& operator=(bitset&&) = default;
 
     bitset &operator=(bitset rhs) {
-        bits_size = rhs.bits_size;
-        array_size = rhs.array_size;
-        bits = std::move(rhs.bits);
-        return *this;
-    }
-
-    bitset(bitset &&other) noexcept:
-            bits_size(other.bits_size),
-            array_size(other.array_size),
-            bits(std::move(other.bits)) {}
-
-    bitset &operator=(bitset &&rhs) noexcept {
         bits_size = rhs.bits_size;
         array_size = rhs.array_size;
         bits = std::move(rhs.bits);

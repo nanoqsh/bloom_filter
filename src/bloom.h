@@ -25,19 +25,10 @@ public:
             function_set(num_hash_functions, hash_fn) {}
 
     bloom(bloom &) = delete;
-
     bloom &operator=(bloom) = delete;
 
-    bloom(bloom &&other) noexcept:
-            bits(std::move(other.bits)),
-            function_set(other.function_set),
-            count(other.count) {}
-
-    bloom &operator=(bloom &&rhs) noexcept {
-        bits = std::move(rhs.bits);
-        function_set = rhs.function_set;
-        count = rhs.count;
-    }
+    bloom(bloom&&) = default;
+    bloom& operator=(bloom&&) = default;
 
     void add(ArgType item) {
         for (size_t i = 0; i < function_set.size(); ++i) {
