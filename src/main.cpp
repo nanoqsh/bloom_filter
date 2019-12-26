@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "bloom.h"
+#include "bloom.hpp"
 
 int main() {
 
@@ -36,9 +36,9 @@ int main() {
         bl.add(str);
     }
 
-    std::cout << bl.error_probability() << '\n';
-    std::cout << bl.bits_count() << '\n';
-    std::cout << bl.elements_count() << '\n';
+    std::cout << "error_probability: " << bl.error_probability() << '\n';
+    std::cout << "bits_count: " << bl.bits_count() << '\n';
+    std::cout << "elements_count: " << bl.elements_count() << '\n';
 
     for (const std::string &str : list) {
         if (bl.possibly_contains(str)) {

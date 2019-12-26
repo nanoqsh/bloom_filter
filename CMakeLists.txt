@@ -4,6 +4,6 @@ project(bloom_filter)
 
 set(CMAKE_CXX_STANDARD 17)
 
-file(GLOB HEADERS src/*.h)
+file(GLOB HEADERS src/*.hpp)
 
 add_executable(${PROJECT_NAME} src/main.cpp ${HEADERS})

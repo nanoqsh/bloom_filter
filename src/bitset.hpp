@@ -27,8 +27,9 @@ public:
         std::memcpy(bits.get(), other.bits.get(), array_size);
     }
 
-    bitset(bitset&&) = default;
-    bitset& operator=(bitset&&) = default;
+    bitset(bitset &&) = default;
+
+    bitset &operator=(bitset &&) = default;
 
     bitset &operator=(bitset rhs) {
         bits_size = rhs.bits_size;

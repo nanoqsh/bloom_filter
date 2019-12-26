@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <utility>
 
-#include "bitset.h"
-#include "seeded_function_set.h"
+#include "bitset.hpp"
+#include "seeded_function_set.hpp"
 
 template<
         class ArgType,
@@ -25,10 +25,12 @@ public:
             function_set(num_hash_functions, hash_fn) {}
 
     bloom(bloom &) = delete;
+
     bloom &operator=(bloom) = delete;
 
-    bloom(bloom&&) = default;
-    bloom& operator=(bloom&&) = default;
+    bloom(bloom &&) = default;
+
+    bloom &operator=(bloom &&) = default;
 
     void add(ArgType item) {
         for (size_t i = 0; i < function_set.size(); ++i) {
@@ -71,7 +73,7 @@ public:
         if (error_probability <= 0 || error_probability > 1) {
             throw std::invalid_argument(
                     "'error_probability' must be between 0 (exclusively) and 1 (inclusively)"
-                    );
+            );
         }
 
         double ln2 = log(2.0);
